@@ -12,10 +12,7 @@
       "environment": [],
       "externalConsole": false,
       "MIMode": "lldb",
-      "preLaunchTask": "Make (Debug)",
-      "logging": {
-        "engineLogging": true
-      }
+      "preLaunchTask": "Make (Debug)"
     }
   ]
 }
