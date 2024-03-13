@@ -4,7 +4,8 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/lib/asio/include"
+                "${workspaceFolder}/lib/asio/include",
+                "${workspaceFolder}/lib"
             ],
             "defines": [],
             "macFrameworkPath": [

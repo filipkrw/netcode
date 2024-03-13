@@ -2,10 +2,23 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "(lldb) Launch",
+      "name": "NetCode",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/out/build/Netcode",
+      "program": "${workspaceFolder}/out/build/NetCode",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "preLaunchTask": "Make (Debug)"
+    },
+    {
+      "name": "NetClient",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/out/build/net_client/NetClient",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

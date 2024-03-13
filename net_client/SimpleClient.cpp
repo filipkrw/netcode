@@ -1,4 +1,5 @@
-#include "../net_common/olc_net.h"
+#include <net_common/olc_net.h>
+#include <iostream>
 
 enum class CustomMsgTypes : uint32_t
 {
@@ -6,8 +7,9 @@ enum class CustomMsgTypes : uint32_t
     MovePlayer
 };
 
-int main2()
+int main()
 {
+    std::cout << "Hello";
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::FireBullet;
 
