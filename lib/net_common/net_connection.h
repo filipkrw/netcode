@@ -9,7 +9,7 @@ namespace olc
     namespace net
     {
         template <typename T>
-        class connection : public std::enable_shared_from_this<connectio<T>>
+        class connection : public std::enable_shared_from_this<connection<T>>
         {
         public:
             connection() {}
@@ -21,7 +21,7 @@ namespace olc
             bool IsConnected() const;
 
         public:
-            bool send(const message<T> &msg);
+            bool Send(const message<T> &msg);
 
         protected:
             asio::ip::tcp::socket m_socket;

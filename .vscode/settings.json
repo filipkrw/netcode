@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    ".env": "plaintext",
     "__bit_reference": "cpp",
     "__bits": "cpp",
     "__config": "cpp",
@@ -63,6 +64,15 @@
     "vector": "cpp",
     "algorithm": "cpp",
     "random": "cpp",
-    "numeric": "cpp"
+    "numeric": "cpp",
+    "*.ipp": "cpp",
+    "any": "cpp",
+    "codecvt": "cpp",
+    "condition_variable": "cpp",
+    "csignal": "cpp",
+    "deque": "cpp",
+    "coroutine": "cpp",
+    "future": "cpp",
+    "list": "cpp"
   }
 }
