@@ -70,7 +70,10 @@
       },
       "problemMatcher": ["$gcc"],
       "dependsOn": ["Build (Debug)"],
-      "group": "build"
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }
