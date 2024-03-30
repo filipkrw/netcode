@@ -88,7 +88,7 @@ namespace olc
 
             void MessageClient(std::shared_ptr<connection<T>> client, const message<T> &msg)
             {
-                if (client && client - < IsConnected())
+                if (client && client->IsConnected())
                 {
                     client->Send(msg);
                 }
@@ -122,7 +122,7 @@ namespace olc
 
                 if (bInvalidClientExists)
                     m_deqConnections.erase(
-                        std::remove(m_deqConnections.begin(), m_deqConnections.end(), null),
+                        std::remove(m_deqConnections.begin(), m_deqConnections.end(), nullptr),
                         m_deqConnections.end());
             }
 
@@ -136,8 +136,9 @@ namespace olc
                 return false;
             }
 
-            virtual bool OnClientDisconnect(std::shared_ptr<conenction<T>> client)
+            virtual bool OnClientDisconnect(std::shared_ptr<connection<T>> client)
             {
+                return false;
             }
 
             virtual void OnMessage(std::shared_ptr<connection<T>> client, message<T> &msg)

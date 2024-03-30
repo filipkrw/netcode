@@ -32,6 +32,22 @@
       "windows": {
         "MIMode": "gdb"
       }
+    },
+    {
+      "name": "NetServer",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/net_server/NetServer",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "preLaunchTask": "Make (Debug)",
+      "windows": {
+        "MIMode": "gdb"
+      }
     }
   ]
 }

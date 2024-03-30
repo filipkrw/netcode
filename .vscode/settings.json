@@ -74,5 +74,6 @@
     "coroutine": "cpp",
     "future": "cpp",
     "list": "cpp"
-  }
+  },
+  "cmake.configureOnOpen": false
 }
