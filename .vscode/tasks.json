@@ -5,23 +5,27 @@
       "type": "shell",
       "label": "Build",
       "command": "cmake",
-      "args": [
-        "-S",
-        "${workspaceFolder}",
-        "-B",
-        "${workspaceFolder}/out/build"
-      ],
+      "args": ["-S", "${workspaceFolder}", "-B", "${workspaceFolder}/build"],
       "options": {
         "cwd": "${workspaceFolder}"
       },
       "problemMatcher": ["$gcc"],
-      "group": "build"
+      "group": "build",
+      "windows": {
+        "args": [
+          "-S",
+          "${workspaceFolder}",
+          "-B",
+          "${workspaceFolder}/build",
+          "-G \"MinGW Makefiles\""
+        ]
+      }
     },
     {
       "type": "shell",
       "label": "Make",
       "command": "make",
-      "args": ["-C", "${workspaceFolder}/out/build"],
+      "args": ["-C", "${workspaceFolder}/build"],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -31,46 +35,36 @@
     },
     {
       "type": "shell",
-      "label": "Run",
-      "command": "${workspaceFolder}/out/build/Netcode",
-      "args": [],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "clear": true
-      },
-      "problemMatcher": [],
-      "dependsOn": ["Make"],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    },
-    {
-      "type": "shell",
       "label": "Build (Debug)",
       "command": "cmake",
       "args": [
         "-S",
         "${workspaceFolder}",
         "-B",
-        "${workspaceFolder}/out/build",
+        "${workspaceFolder}/build",
         "-DCMAKE_BUILD_TYPE=Debug"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
       "problemMatcher": ["$gcc"],
-      "group": "build"
+      "group": "build",
+      "windows": {
+        "args": [
+          "-S",
+          "${workspaceFolder}",
+          "-B",
+          "${workspaceFolder}/build",
+          "-DCMAKE_BUILD_TYPE=Debug",
+          "-G \"MinGW Makefiles\""
+        ]
+      }
     },
     {
       "type": "shell",
       "label": "Make (Debug)",
       "command": "cmake",
-      "args": ["--build", "${workspaceFolder}/out/build"],
+      "args": ["--build", "${workspaceFolder}/build"],
       "options": {
         "cwd": "${workspaceFolder}"
       },

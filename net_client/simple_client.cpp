@@ -1,5 +1,5 @@
-#include <net_common/olc_net.h>
-#include <net_common/net_client.h>
+#include <olc_net.h>
+#include <net_client.h>
 #include <iostream>
 
 enum class CustomMsgTypes : uint32_t
@@ -19,13 +19,20 @@ public:
         msg.header.id = CustomMsgTypes::FireBullet;
         msg << x << y;
         Send(msg);
+        return true;
     };
+
+    bool Send(const olc::net::message<CustomMsgTypes> &msg)
+    {
+        std::cout << msg;
+        return true;
+    }
 };
 
 int main()
 {
     CustomClient c;
-    c.Connect("community.onelonecoder.com", 60000);
+    // c.Connect("community.onelonecoder.com", 60000);
     c.FireBullet(2.0f, 5.0f);
     return 0;
 }

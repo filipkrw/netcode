@@ -6,7 +6,7 @@
 #include <asio/ts/buffer.hpp>
 #include <asio/ts/internet.hpp>
 
-#include <net_common/olc_net.h>
+#include <olc_net.h>
 
 std::vector<char> vBuffer(20 * 1024);
 

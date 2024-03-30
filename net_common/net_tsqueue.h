@@ -46,7 +46,7 @@ namespace olc
             size_t count()
             {
                 std::scoped_lock lock(muxQueue);
-                deqQueue.size();
+                return deqQueue.size();
             }
 
             void clear()
