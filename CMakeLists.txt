@@ -10,6 +10,6 @@ file(GLOB_RECURSE SOURCES src/*.cpp)
 add_subdirectory(net_client)
 add_executable(NetCode ${SOURCES})
 
-if(WIN32 AND MINGW)
+if(MINGW)
   target_link_libraries(NetCode ws2_32)
 endif()
