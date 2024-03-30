@@ -12,5 +12,5 @@ add_subdirectory(net_server)
 add_executable(NetCode ${SOURCES})
 
 if(MINGW)
-  target_link_libraries(NetServer ws2_32 wsock32)
+  target_link_libraries(NetCode ws2_32 wsock32)
 endif()

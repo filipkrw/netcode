@@ -10,5 +10,5 @@ file(GLOB_RECURSE SOURCES *.cpp)
 add_executable(NetClient ${SOURCES})
 
 if(MINGW)
-  target_link_libraries(NetServer ws2_32 wsock32)
+  target_link_libraries(NetClient ws2_32 wsock32)
 endif()
