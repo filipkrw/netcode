@@ -130,6 +130,12 @@ namespace olc
 
             void Update(size_t nMaxMessages = -1) // size_t is unsigned, -1 is the maximum number
             {
+                while (!m_qMessagesIn.empty())
+                {
+                    auto msg = m_qMessagesIn.pop_front();
+
+                    OnMessage(msg.remote, msg.msg);
+                }
             }
 
         protected:

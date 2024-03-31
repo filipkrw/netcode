@@ -13,7 +13,7 @@ namespace olc
         class client_interface
         {
         protected:
-            client_interface() : m_socket(m_context) {}
+            client_interface() {}
 
             virtual ~client_interface()
             {
@@ -85,7 +85,6 @@ namespace olc
         protected:
             asio::io_context m_context;
             std::thread thrContext;
-            asio::ip::tcp::socket m_socket;
             std::unique_ptr<connection<T>> m_connection;
 
         private:

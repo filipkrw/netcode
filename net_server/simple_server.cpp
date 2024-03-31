@@ -1,6 +1,5 @@
 #include <iostream>
 #include <olc_net.h>
-#include <net_server.h>
 
 enum class CustomMsgTypes : uint32_t
 {

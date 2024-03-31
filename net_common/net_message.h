@@ -22,7 +22,7 @@ namespace olc
 
             size_t size() const
             {
-                return sizeof(message_header<T>) + body.size();
+                return body.size();
             }
 
             friend std::ostream &operator<<(std::ostream &os, const message<T> &message)
@@ -46,13 +46,13 @@ namespace olc
             }
 
             template <typename DataType>
-            friend message<T> &operator>>(message<T> &msg, const DataType &data)
+            friend message<T> &operator>>(message<T> &msg, DataType &data)
             {
                 static_assert(std::is_standard_layout<DataType>::value, "Data is to complex to be pushed into vector");
 
                 size_t i = msg.body.size() - sizeof(DataType);
 
-                std::memcpy((void *)&data, msg.body.data() + i, sizeof(DataType));
+                std::memcpy(&data, msg.body.data() + i, sizeof(DataType));
                 msg.body.resize(i);
 
                 msg.header.size = msg.size();
@@ -66,7 +66,7 @@ namespace olc
         template <typename T>
         struct owned_message
         {
-            std::shared_ptr<connection<T>> remove = nullptr;
+            std::shared_ptr<connection<T>> remote = nullptr;
             message<T> msg;
 
             friend std::ostream &operator<<(std::ostream &os, const owned_message<T> &msg)
