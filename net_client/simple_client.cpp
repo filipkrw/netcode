@@ -24,14 +24,26 @@ public:
         msg << timeNow;
         Send(msg);
     }
+
+    void MessageAll()
+    {
+        olc::net::message<CustomMsgTypes> msg;
+        msg.header.id = CustomMsgTypes::MessageAll;
+        Send(msg);
+    }
 };
 
 void HandleInput(CustomClient &client)
 {
+    std::string input;
     while (true)
     {
-        std::cin.ignore();
-        client.PingServer();
+        std::getline(std::cin, input);
+
+        if (input == "ping")
+            client.PingServer();
+        if (input == "all")
+            client.MessageAll();
     }
 }
 
@@ -52,14 +64,28 @@ int main()
 
                 switch (msg.header.id)
                 {
+                case CustomMsgTypes::ServerAccept:
+                {
+                    std::cout << "[MESSAGE] Server Accepted Connection\n";
+                }
+                break;
+
                 case CustomMsgTypes::ServerPing:
                 {
                     std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
                     std::chrono::system_clock::time_point timeThen;
                     msg >> timeThen;
-                    std::cout << "[INCOMING] Ping: "
+                    std::cout << "[MESSAGE] Ping: "
                               << std::chrono::duration<double>(timeNow - timeThen).count()
                               << "\n";
+                }
+                break;
+
+                case CustomMsgTypes::ServerMessage:
+                {
+                    uint32_t clientID;
+                    msg >> clientID;
+                    std::cout << "[MESSAGE] Hello from [" << clientID << "]\n";
                 }
                 break;
                 }
