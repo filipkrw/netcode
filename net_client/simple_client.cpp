@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <olc_net.h>
 
 enum class CustomMsgTypes : uint32_t
@@ -25,21 +26,29 @@ public:
     }
 };
 
+void HandleInput(CustomClient &client)
+{
+    while (true)
+    {
+        std::cin.ignore();
+        client.PingServer();
+    }
+}
+
 int main()
 {
-    CustomClient c;
-    c.Connect("127.0.0.1", 60000);
+    CustomClient client;
+    client.Connect("127.0.0.1", 60000);
+
+    std::thread io_thread(HandleInput, std::ref(client));
 
     while (true)
     {
-        if (c.IsConnected())
+        if (client.IsConnected())
         {
-            c.PingServer();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-
-            if (!c.Incoming().empty())
+            if (!client.Incoming().empty())
             {
-                auto msg = c.Incoming().pop_front().msg;
+                auto msg = client.Incoming().pop_front().msg;
 
                 switch (msg.header.id)
                 {
@@ -48,7 +57,9 @@ int main()
                     std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
                     std::chrono::system_clock::time_point timeThen;
                     msg >> timeThen;
-                    std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "\n";
+                    std::cout << "[INCOMING] Ping: "
+                              << std::chrono::duration<double>(timeNow - timeThen).count()
+                              << "\n";
                 }
                 break;
                 }
