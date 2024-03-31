@@ -1,111 +1,55 @@
+#include <atomic>
+#include <thread>
 #include <iostream>
-#include <chrono>
+#include <mutex>
+#include <condition_variable>
+#include <string>
 
-#define ASIO_STANDALONE
-#include <asio.hpp>
-#include <asio/ts/buffer.hpp>
-#include <asio/ts/internet.hpp>
+std::mutex mutex;
+std::condition_variable cv;
+std::string shared_input;
+bool is_processing = false;
 
-#include <olc_net.h>
-
-std::vector<char> vBuffer(20 * 1024);
-
-enum class CustomMsgTypes : uint32_t
+void ReadInput(std::atomic<bool> &is_running)
 {
-    FireBullet,
-    MovePlayer
-};
+    while (is_running.load())
+    {
+        std::string input;
+        std::cin >> input;
+
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            shared_input = input;
+            is_processing = true;
+        }
+
+        cv.notify_one();
+
+        if (input == "q")
+            is_running.store(false);
+    }
+}
 
 int main()
 {
-    olc::net::message<CustomMsgTypes> msg;
-    msg.header.id = CustomMsgTypes::FireBullet;
+    std::atomic<bool> is_running(true);
+    std::thread io_thread(ReadInput, std::ref(is_running));
 
-    int a = 5;
-    bool b = true;
-    float c = 2.123;
-
-    struct
+    while (is_running.load())
     {
-        float x;
-        float y;
-    } d[5];
+        std::unique_lock<std::mutex> lock(mutex);
+        cv.wait(lock, []
+                { return is_processing; });
 
-    msg << a << b << c << d;
+        if (!is_running.load())
+            break;
 
-    a = 99;
-    b = false;
-    c = 0.0;
+        std::cout << "Main Thread processing shared data: " << shared_input << std::endl;
+        is_processing = false;
+    }
 
-    msg >> d >> c >> b >> a;
+    if (io_thread.joinable())
+        io_thread.join();
 
     return 0;
 }
-
-// void GrabSomeData(asio::ip::tcp::socket &socket)
-// {
-//     socket.async_read_some(
-//         asio::buffer(vBuffer.data(), vBuffer.size()),
-//         [&](std::error_code ec, std::size_t length)
-//         {
-//             if (!ec)
-//             {
-//                 std::cout << "\n\nRead " << length << " bytes\n\n";
-
-//                 for (int i = 0; i < length; i++)
-//                 {
-//                     std::cout << vBuffer[i];
-//                 }
-
-//                 GrabSomeData(socket);
-//             }
-//         });
-// }
-
-// int main()
-// {
-//     asio::error_code ec;
-//     asio::io_context context;
-//     asio::io_context::work idleWork(context);
-
-//     std::thread thrContext = std::thread([&]()
-//                                          { context.run(); });
-
-//     asio::ip::tcp::endpoint endpoint(asio::ip::make_address("93.184.216.34", ec), 80);
-//     asio::ip::tcp::socket socket(context);
-
-//     socket.connect(endpoint, ec);
-
-//     if (!ec)
-//     {
-//         std::cout << "Connected!" << std::endl;
-//     }
-//     else
-//     {
-//         std::cout << "Failed to connect to address:\n"
-//                   << ec.message() << std::endl;
-//     }
-
-//     if (socket.is_open())
-//     {
-//         GrabSomeData(socket);
-
-//         std::string request = "GET /index.html HTTP/1.1\r\n"
-//                               "Host: example.com\r\n"
-//                               "Connection: close\r\n\r\n";
-
-//         socket.write_some(asio::buffer(request.data(), request.size()), ec);
-
-//         using namespace std::chrono_literals;
-//         std::this_thread::sleep_for(5000ms);
-
-//         context.stop();
-
-//         if (thrContext.joinable())
-//         {
-//             thrContext.join();
-//         }
-//     }
-
-//     return 0;
-// }
