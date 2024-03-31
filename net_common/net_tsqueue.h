@@ -37,10 +37,10 @@ namespace olc
                 deqQueue.emplace_front(std::move(item));
             }
 
-            void empty()
+            bool empty()
             {
                 std::scoped_lock lock(muxQueue);
-                deqQueue.empty();
+                return deqQueue.empty();
             }
 
             size_t count()

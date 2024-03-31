@@ -4,35 +4,63 @@
 
 enum class CustomMsgTypes : uint32_t
 {
-    FireBullet,
-    MovePlayer
+    ServerAccept,
+    ServerDeny,
+    ServerPing,
+    MessageAll,
+    ServerMessage
 };
 
 class CustomClient : public olc::net::client_interface<CustomMsgTypes>
 {
 public:
-    CustomClient() {}
-
-    bool FireBullet(float x, float y)
+    void PingServer()
     {
         olc::net::message<CustomMsgTypes> msg;
-        msg.header.id = CustomMsgTypes::FireBullet;
-        msg << x << y;
-        Send(msg);
-        return true;
-    };
+        msg.header.id = CustomMsgTypes::ServerPing;
 
-    bool Send(const olc::net::message<CustomMsgTypes> &msg)
-    {
-        std::cout << msg;
-        return true;
+        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+
+        msg << timeNow;
+        Send(msg);
     }
 };
 
 int main()
 {
     CustomClient c;
-    // c.Connect("community.onelonecoder.com", 60000);
-    c.FireBullet(2.0f, 5.0f);
+    c.Connect("127.0.0.1", 60000);
+
+    // bool key[3] = {false, false, false};
+    // bool old_key[3] = {false, false, false};
+
+    bool bQuit = false;
+    while (!bQuit)
+    {
+        if (c.IsConnected())
+        {
+            if (!c.Incoming().empty())
+            {
+                auto msg = c.Incoming().pop_front().msg;
+
+                switch (msg.header.id)
+                {
+                case CustomMsgTypes::ServerPing:
+                {
+                    std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+                    std::chrono::system_clock::time_point timeThen;
+                    msg >> timeThen;
+                    std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "\n";
+                }
+                break;
+                }
+            }
+        }
+        else
+        {
+            std::cout << "Server Down\n";
+            bQuit = true;
+        }
+    }
     return 0;
 }

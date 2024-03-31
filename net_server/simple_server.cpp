@@ -31,6 +31,15 @@ protected:
 
     virtual void OnMessage(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client, olc::net::message<CustomMsgTypes> msg)
     {
+        switch (msg.header.id)
+        {
+        case CustomMsgTypes::ServerPing:
+        {
+            std::cout << "[" << client->GetID() << "]: Server Ping\n";
+            client->Send(msg);
+        }
+        break;
+        }
     }
 };
 

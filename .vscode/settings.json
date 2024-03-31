@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    "*.json": "jsonc",
     ".env": "plaintext",
     "__bit_reference": "cpp",
     "__bits": "cpp",
@@ -73,7 +74,25 @@
     "deque": "cpp",
     "coroutine": "cpp",
     "future": "cpp",
-    "list": "cpp"
+    "list": "cpp",
+    "charconv": "cpp",
+    "format": "cpp",
+    "forward_list": "cpp",
+    "functional": "cpp",
+    "iomanip": "cpp",
+    "iterator": "cpp",
+    "utility": "cpp",
+    "xhash": "cpp",
+    "xiosbase": "cpp",
+    "xlocale": "cpp",
+    "xlocbuf": "cpp",
+    "xlocmon": "cpp",
+    "xlocnum": "cpp",
+    "xloctime": "cpp",
+    "xmemory": "cpp",
+    "xstring": "cpp",
+    "xtree": "cpp",
+    "xutility": "cpp"
   },
   "cmake.configureOnOpen": false
 }
