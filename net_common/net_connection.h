@@ -1,13 +1,14 @@
 #pragma once
 
-#include "net_common.h"
-#include "net_tsqueue.h"
-#include "net_message.h"
+#include "olc_net.h"
 
 namespace olc
 {
     namespace net
     {
+        template <typename T>
+        class server_interface;
+
         template <typename T>
         class connection : public std::enable_shared_from_this<connection<T>>
         {
@@ -27,6 +28,12 @@ namespace olc
                                                   m_qMessagesIn(qIn)
             {
                 m_nOwnerType = parent;
+
+                if (m_nOwnerType == owner::server)
+                {
+                    m_nHandshakeOut = uint64_t(std::chrono::system_clock::now().time_since_epoch().count());
+                    m_nHandshakeCheck = scramble(m_nHandshakeOut);
+                }
             }
 
             virtual ~connection() {}
@@ -37,14 +44,16 @@ namespace olc
             }
 
         public:
-            void ConnectToClient(int32_t uid = 0)
+            void ConnectToClient(olc::net::server_interface<T> *server, uint32_t uid = 0)
             {
                 if (m_nOwnerType == owner::server)
                 {
                     if (m_socket.is_open())
                     {
                         id = uid;
-                        ReadHeader();
+
+                        WriteValidation();
+                        ReadValidation(server);
                     }
                 }
             }
@@ -57,7 +66,7 @@ namespace olc
                                         {
                                             if (!ec)
                                             {
-                                                ReadHeader();
+                                                ReadValidation();
                                             }
                                         });
                 }
@@ -199,6 +208,60 @@ namespace olc
                                   });
             }
 
+            void WriteValidation()
+            {
+                asio::async_write(m_socket,
+                                  asio::buffer(&m_nHandshakeOut, sizeof(uint64_t)),
+                                  [this](std::error_code ec, std::size_t length)
+                                  {
+                                      if (!ec)
+                                      {
+                                          if (m_nOwnerType == owner::client)
+                                              ReadHeader();
+                                      }
+                                      else
+                                      {
+                                          std::cout << "[" << id << "] Write Validation Fail.\n";
+                                          m_socket.close();
+                                      }
+                                  });
+            }
+
+            void ReadValidation(olc::net::server_interface<T> *server = nullptr)
+            {
+                asio::async_read(m_socket, asio::buffer(&m_nHandshakeIn, sizeof(uint64_t)),
+                                 [this, server](std::error_code ec, std::size_t length)
+                                 {
+                                     if (!ec)
+                                     {
+                                         if (m_nOwnerType == owner::server)
+                                         {
+                                             if (m_nHandshakeIn == m_nHandshakeCheck)
+                                             {
+                                                 std::cout << "Client Validated" << std::endl;
+                                                 server->OnClientValidated(this->shared_from_this());
+
+                                                 ReadHeader();
+                                             }
+                                             else
+                                             {
+                                                 std::cout << "Client Validation Failed" << std::endl;
+                                             }
+                                         }
+                                         else
+                                         {
+                                             m_nHandshakeOut = scramble(m_nHandshakeIn);
+                                             WriteValidation();
+                                         }
+                                     }
+                                     else
+                                     {
+                                         std::cout << "[" << id << "] Read Validation Fail.\n";
+                                         m_socket.close();
+                                     }
+                                 });
+            }
+
             void AddToIncomingMesasgeQueue()
             {
                 if (m_nOwnerType == owner::server)
@@ -212,6 +275,13 @@ namespace olc
                 ReadHeader();
             }
 
+            uint64_t scramble(uint64_t nInput)
+            {
+                uint64_t out = nInput ^ 0xDEADBEEFC0DECAFF;
+                out = (out & 0xF0F0F0F0F0F0F0) >> 4 | (out & 0x0F0F0F0F0F0F0F) << 4;
+                return out ^ 0xC0DEFACE12341234;
+            }
+
         protected:
             asio::ip::tcp::socket m_socket;
             asio::io_context &m_asioContext;
@@ -219,8 +289,13 @@ namespace olc
             tsqueue<message<T>> m_qMessagesOut;
             tsqueue<owned_message<T>> &m_qMessagesIn;
             message<T> m_msgTemporaryIn;
+
             owner m_nOwnerType = owner::server; // default?
             uint32_t id = 0;
+
+            uint64_t m_nHandshakeOut = 0;
+            uint64_t m_nHandshakeIn = 0;
+            uint64_t m_nHandshakeCheck = 0;
         };
     };
 }

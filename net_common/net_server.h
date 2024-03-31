@@ -69,7 +69,7 @@ namespace olc
                             if (OnClientConnect(newconn))
                             {
                                 m_deqConnections.push_back(std::move(newconn));
-                                m_deqConnections.back()->ConnectToClient(nIDCounter++);
+                                m_deqConnections.back()->ConnectToClient(this, nIDCounter++);
 
                                 auto x = m_deqConnections.back()->GetID();
                                 std::cout << "[" << x << "] Connection Approved\n";
@@ -154,6 +154,11 @@ namespace olc
             }
 
             virtual void OnMessage(std::shared_ptr<connection<T>> client, message<T> &msg)
+            {
+            }
+
+        public:
+            virtual void OnClientValidated(std::shared_ptr<connection<T>> client)
             {
             }
 
