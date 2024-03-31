@@ -128,13 +128,18 @@ namespace olc
                         m_deqConnections.end());
             }
 
-            void Update(size_t nMaxMessages = -1) // size_t is unsigned, -1 is the maximum number
+            void Update(size_t nMaxMessages = -1, bool bWait = false) // size_t is unsigned, -1 is the maximum number
             {
-                while (!m_qMessagesIn.empty())
+                if (bWait)
+                    m_qMessagesIn.wait();
+
+                size_t nMessageCount = 0;
+                while (nMessageCount < nMaxMessages && !m_qMessagesIn.empty())
                 {
                     auto msg = m_qMessagesIn.pop_front();
 
                     OnMessage(msg.remote, msg.msg);
+                    nMessageCount++;
                 }
             }
 
