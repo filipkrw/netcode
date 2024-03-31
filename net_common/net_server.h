@@ -144,9 +144,8 @@ namespace olc
                 return false;
             }
 
-            virtual bool OnClientDisconnect(std::shared_ptr<connection<T>> client)
+            virtual void OnClientDisconnect(std::shared_ptr<connection<T>> client)
             {
-                return false;
             }
 
             virtual void OnMessage(std::shared_ptr<connection<T>> client, message<T> &msg)

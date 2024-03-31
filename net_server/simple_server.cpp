@@ -23,18 +23,17 @@ protected:
         return true;
     }
 
-    virtual bool OnClientDisconnect(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client)
+    virtual void OnClientDisconnect(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client)
     {
-        return true;
     }
 
-    virtual void OnMessage(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client, olc::net::message<CustomMsgTypes> msg)
+    virtual void OnMessage(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client, olc::net::message<CustomMsgTypes> &msg)
     {
         switch (msg.header.id)
         {
         case CustomMsgTypes::ServerPing:
         {
-            std::cout << "[" << client->GetID() << "]: Server Ping\n";
+            std::cout << "[" << client->GetID() << "] Server Ping\n";
             client->Send(msg);
         }
         break;
