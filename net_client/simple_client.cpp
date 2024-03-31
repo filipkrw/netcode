@@ -35,8 +35,24 @@ int main()
         if (c.IsConnected())
         {
             c.PingServer();
-            std::this_thread::sleep_for(std::chrono::seconds(60));
-            break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+            if (!c.Incoming().empty())
+            {
+                auto msg = c.Incoming().pop_front().msg;
+
+                switch (msg.header.id)
+                {
+                case CustomMsgTypes::ServerPing:
+                {
+                    std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+                    std::chrono::system_clock::time_point timeThen;
+                    msg >> timeThen;
+                    std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "\n";
+                }
+                break;
+                }
+            }
         }
     }
 

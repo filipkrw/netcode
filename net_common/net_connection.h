@@ -57,7 +57,7 @@ namespace olc
                                         {
                                             if (!ec)
                                             {
-                                                // ReadHeader();
+                                                ReadHeader();
                                             }
                                         });
                 }
