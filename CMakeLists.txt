@@ -7,8 +7,11 @@ set(CMAKE_BUILD_TYPE Debug)
 include_directories(lib/asio net_common)
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
-add_subdirectory(net_client)
-add_subdirectory(net_server)
+# add_subdirectory(net_client)
+# add_subdirectory(net_server)
+
+add_subdirectory(mmo/client)
+add_subdirectory(mmo/server)
 add_executable(NetCode ${SOURCES})
 
 if(MINGW)
