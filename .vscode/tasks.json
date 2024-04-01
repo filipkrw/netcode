@@ -37,13 +37,7 @@
       "type": "shell",
       "label": "Build (Debug)",
       "command": "cmake",
-      "args": [
-        "-S",
-        "${workspaceFolder}",
-        "-B",
-        "${workspaceFolder}/build",
-        "-DCMAKE_BUILD_TYPE=Debug"
-      ],
+      "args": ["-S", "${workspaceFolder}", "-B", "${workspaceFolder}/build"],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -55,8 +49,7 @@
           "${workspaceFolder}",
           "-B",
           "${workspaceFolder}/build",
-          "-DCMAKE_BUILD_TYPE=Debug",
-          "-G \"MinGW Makefiles\""
+          "-DCMAKE_BUILD_TYPE=Debug"
         ]
       }
     },
@@ -70,10 +63,7 @@
       },
       "problemMatcher": ["$gcc"],
       "dependsOn": ["Build (Debug)"],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
+      "group": "build"
     }
   ]
 }

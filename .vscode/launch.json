@@ -80,6 +80,30 @@
       "windows": {
         "MIMode": "gdb"
       }
+    },
+    {
+      "name": "MMOServer (Windows)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/mmo/server/Debug/MMOServer",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Make (Debug)"
+    },
+    {
+      "name": "MMOClient (Windows)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/mmo/client/Debug/MMOClient",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Make (Debug)"
     }
   ]
 }
